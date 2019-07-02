@@ -1,0 +1,14 @@
+- src: https://github.com/hashistack/ansible_role-docker
+  version: master
+
+- src: https://github.com/hashistack/ansible_role-dnsmasq
+  version: master
+
+- src: https://github.com/hashistack/ansible_role-consul
+  version: master
+
+- src: https://github.com/hashistack/ansible_role-vault
+  version: master
+
+- src: https://github.com/hashistack/ansible_role-nomad
+  version: master
