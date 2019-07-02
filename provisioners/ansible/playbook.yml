@@ -1,0 +1,56 @@
+---
+
+- hosts: all
+
+  vars:
+    # dnsmasq
+    dnsmasq_config_dir: /etc/dnsmasq.d
+    dnsmasq_config: server=/consul/127.0.0.1#8600
+
+    # consul
+    consul_version: 1.5.3
+    consul_config_dir: /etc/consul.d
+    consul_config:
+      data_dir: /opt/consul
+      server: true
+
+    # vault
+    vault_version: 1.2.1
+    vault_config_dir: /etc/vault.d
+    vault_config:
+      api_addr: http://127.0.0.1:8200
+      listener:
+        tcp:
+          address: 127.0.0.1:8200
+          tls_disable: 1
+
+    # nomad
+    nomad_version: 0.9.4
+    nomad_config_dir: /etc/nomad.d
+    nomad_config:
+      data_dir: /opt/nomad
+      server:
+        enabled: true
+
+  tasks:
+    - name: install useful packages
+      package:
+        name: "{{ item }}"
+        state: present
+      become: yes
+      with_items:
+        - htop
+        - tmux
+        - vim
+
+  roles:
+    - role: ../../.packer/ansible_role-docker
+      become: true
+    - role: ../../.packer/ansible_role-dnsmasq
+      become: true
+    - role: ../../.packer/ansible_role-consul
+      become: true
+    - role: ../../.packer/ansible_role-vault
+      become: true
+    - role: ../../.packer/ansible_role-nomad
+      become: true
