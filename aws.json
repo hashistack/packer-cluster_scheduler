@@ -1,0 +1,49 @@
+{
+    "variables": {
+        "hashistack_environment": "{{ env `HASHISTACK_ENVIRONMENT` }}",
+        "ami_dst-name_prefix": "cluster_scheduler",
+        "ami_dst-tag_name": "cluster_scheduler",
+        "ami_src-architecture": "x86_64",
+        "ami_src-image_type": "machine",
+        "ami_src-name_prefix": "amzn2-ami-hvm-",
+        "ami_src-owner_alias": "amazon",
+        "ami_src-root_device_type": "ebs",
+        "ami_src-virtualization_type": "hvm",
+        "packer-instance_type": "t2.micro",
+        "packer-run_tag_name": "pkr-cluster_scheduler",
+        "packer-ssh_username": "ec2-user"
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "ami_name": "{{ user `ami_dst-name_prefix` }}-{{ user `hashistack_environment` }}-{{ timestamp }}",
+            "instance_type": "{{ user `packer-instance_type` }}",
+            "ssh_pty": "true",
+            "ssh_username": "ec2-user",
+            "source_ami_filter": {
+                "filters": {
+                    "name": "{{ user `ami_src-name_prefix` }}*",
+                    "architecture": "{{ user `ami_src-architecture` }}",
+                    "image-type": "{{ user `ami_src-image_type` }}",
+                    "root-device-type": "{{ user `ami_src-root_device_type` }}",
+                    "virtualization-type": "{{ user `ami_src-virtualization_type` }}"
+                },
+                "owners": ["{{ user `ami_src-owner_alias` }}"],
+                "most_recent": true
+            },
+            "run_tags": {
+                "Name": "{{ user `packer-run_tag_name` }}"
+            },
+            "tags": {
+                "Name": "{{ user `ami_dst-tag_name` }}"
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "{{ template_dir }}/provisioners/ansible/playbook.yml",
+            "timeout": "5m"
+        }
+    ]
+}
