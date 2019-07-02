@@ -1,0 +1,8 @@
+# env file
+.envrc
+
+# ansible retry file
+provisioners/ansible/playbook.retry
+
+# packer runtime dir
+.packer/
