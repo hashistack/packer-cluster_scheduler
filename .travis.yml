@@ -1,0 +1,30 @@
+language: python
+
+python:
+  - "2.7"
+
+env:
+  global:
+    - PACKER_VERSION=1.4.1
+    - PACKER_PATH=$HOME/bin
+
+before_install:
+  - wget "https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip" -O /tmp/packer.zip
+
+install:
+  - unzip -d "${PACKER_PATH}" /tmp/packer.zip
+  - pip install ansible==2.7.11
+
+before_script:
+  - ansible-galaxy install -r ansible-requirements.yml -p .packer/
+
+script:
+  - packer validate aws.json
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script:
+    - HASHISTACK_ENVIRONMENT=stg packer build aws.json
+  on:
+    branch: master
