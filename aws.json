@@ -1,8 +1,7 @@
 {
     "variables": {
-        "hashistack_environment": "{{ env `HASHISTACK_ENVIRONMENT` }}",
-        "ami_dst-name_prefix": "cluster_scheduler",
-        "ami_dst-tag_name": "cluster_scheduler",
+        "ami_dst-name_prefix": "cluster_scheduler-{{ env `HASHISTACK_ENVIRONMENT` }}",
+        "ami_dst-tag_name": "cluster_scheduler-{{ env `HASHISTACK_ENVIRONMENT` }}",
         "ami_src-architecture": "x86_64",
         "ami_src-image_type": "machine",
         "ami_src-name_prefix": "amzn2-ami-hvm-",
@@ -16,7 +15,7 @@
     "builders": [
         {
             "type": "amazon-ebs",
-            "ami_name": "{{ user `ami_dst-name_prefix` }}-{{ user `hashistack_environment` }}-{{ timestamp }}",
+            "ami_name": "{{ user `ami_dst-name_prefix` }}-{{ timestamp }}",
             "instance_type": "{{ user `packer-instance_type` }}",
             "ssh_pty": "true",
             "ssh_username": "ec2-user",
